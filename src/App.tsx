@@ -10,7 +10,7 @@ import {
 import { Box, Stack } from "@mui/system";
 import { useState } from "react";
 import "./App.css";
-const scriptURL = process.env.SHEET_SCRIPT_URL!;
+const scriptURL = process.env.REACT_APP_SHEET_SCRIPT_URL!;
 
 interface Item {
   label: string;
@@ -45,6 +45,8 @@ const SUBCATEGORIES: Item[] = [
   { label: "Sex", key: "sex" },
   { label: "Snacks", key: "snacks" },
 ];
+
+console.log("Will fetch to", scriptURL);
 
 function App() {
   const [category, setCategory] = useState<Item | null>(null);
