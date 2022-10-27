@@ -68,6 +68,7 @@ function App() {
     if (actualDescription) {
       body.append("Description", actualDescription);
     }
+    console.log("Sending result to", scriptURL);
     fetch(scriptURL, { method: "POST", body })
       .then((response) => console.log("Success!", response))
       .then(() => setIsModalOpen(true))
