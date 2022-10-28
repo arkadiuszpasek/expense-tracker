@@ -77,8 +77,14 @@ function App() {
 
   return (
     <>
-      <Stack sx={{ padding: 2 }} spacing={4}>
+      <Stack
+        sx={{ padding: 2, width: "100%", height: "100vh" }}
+        spacing={4}
+        justifyContent="flex-end"
+        alignItems="flex-end"
+      >
         <Autocomplete
+          sx={{ width: "70%" }}
           value={category}
           onChange={(_, v) => setCategory(v)}
           id="category"
@@ -86,6 +92,7 @@ function App() {
           renderInput={(params) => <TextField {...params} label="Category" />}
         />
         <OutlinedInput
+          sx={{ width: "70%" }}
           type="number"
           id="value"
           value={value}
@@ -93,6 +100,7 @@ function App() {
           startAdornment={<InputAdornment position="start">PLN</InputAdornment>}
         />
         <Autocomplete
+          sx={{ width: "70%" }}
           value={subcategory}
           onChange={(_, v) => setSubcategory(v)}
           id="subcategory"
@@ -103,6 +111,7 @@ function App() {
         />
 
         <OutlinedInput
+          sx={{ width: "70%" }}
           type="text"
           id="description"
           value={description}
@@ -112,7 +121,7 @@ function App() {
         <Button
           variant="outlined"
           onClick={handleSubmit}
-          sx={{ marginTop: 4, padding: 1 }}
+          sx={{ width: "70%", marginTop: 4, padding: 1 }}
         >
           Submit
         </Button>
