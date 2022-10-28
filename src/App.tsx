@@ -1,10 +1,10 @@
 import {
-  Autocomplete,
   Button,
   InputAdornment,
+  MenuItem,
   Modal,
   OutlinedInput,
-  TextField,
+  Select,
   Typography,
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
@@ -12,49 +12,50 @@ import { useState } from "react";
 import "./App.css";
 const scriptURL = process.env.REACT_APP_SHEET_SCRIPT_URL!;
 
-interface Item {
-  label: string;
-  key: string;
-}
-const CATEGORIES: Item[] = [
-  { label: "Bike", key: "bike" },
-  { label: "Bills", key: "bills" },
-  { label: "Car", key: "car" },
-  { label: "Clothes", key: "clothes" },
-  { label: "Cosmetic", key: "cosmetic" },
-  { label: "Electronics", key: "electronics" },
-  { label: "Flat", key: "flat" },
-  { label: "Fun", key: "fun" },
-  { label: "Groceries", key: "groceries" },
-  { label: "Health", key: "health" },
-  { label: "Hobbies", key: "hobbies" },
-  { label: "House", key: "house" },
-  { label: "Social", key: "social" },
-  { label: "Supplements", key: "supplements" },
-  { label: "Travel", key: "travel" },
-];
+const CATEGORIES = [
+  "bike",
+  "bills",
+  "car",
+  "clothes",
+  "cosmetic",
+  "electronics",
+  "flat",
+  "fun",
+  "groceries",
+  "health",
+  "hobbies",
+  "house",
+  "social",
+  "supplements",
+  "travel",
+] as const;
 
-const SUBCATEGORIES: Item[] = [
-  { label: "Alcohol", key: "alcohol" },
-  { label: "Drinks", key: "drinks" },
-  { label: "Dentist", key: "dentist" },
-  { label: "Food", key: "food" },
-  { label: "Gas", key: "gas" },
-  { label: "Hair", key: "Hair" },
-  { label: "Phone", key: "phone" },
-  { label: "Sex", key: "sex" },
-  { label: "Snacks", key: "snacks" },
-];
+const SUBCATEGORIES = [
+  "alcohol",
+  "drinks",
+  "dentist",
+  "food",
+  "gas",
+  "hair",
+  "phone",
+  "sex",
+  "snacks",
+] as const;
 
 console.log("Will fetch to", scriptURL);
 
 function App() {
-  const [category, setCategory] = useState<Item | null>(null);
-  const [value, setValue] = useState<number | null>(null);
-  const [subcategory, setSubcategory] = useState<Item | null>(null);
+  const [modalMessage, setModalMessage] = useState<string>();
+  const [category, setCategory] = useState<typeof CATEGORIES[number] | null>(
+    null
+  );
+  const [value, setValue] = useState<number | "">("");
+  const [subcategory, setSubcategory] = useState<
+    typeof SUBCATEGORIES[number] | null
+  >(null);
   const [description, setDesription] = useState<string>();
 
-  const actualDescription = subcategory?.key || description;
+  const actualDescription = subcategory || description;
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -63,7 +64,7 @@ function App() {
     if (!category || !value) {
       return;
     }
-    body.append("Category", category.key);
+    body.append("Category", category);
     body.append("Value", value.toString());
     if (actualDescription) {
       body.append("Description", actualDescription);
@@ -72,7 +73,11 @@ function App() {
     fetch(scriptURL, { method: "POST", body })
       .then((response) => console.log("Success!", response))
       .then(() => setIsModalOpen(true))
-      .catch((error) => console.error("Error!", error.message));
+      .catch((error) => {
+        console.error("Error!", error.message);
+        setModalMessage(error.message);
+        setIsModalOpen(true);
+      });
   };
 
   return (
@@ -83,14 +88,24 @@ function App() {
         justifyContent="flex-end"
         alignItems="flex-end"
       >
-        <Autocomplete
+        <Select
           sx={{ width: "70%" }}
-          value={category}
-          onChange={(_, v) => setCategory(v)}
           id="category"
-          options={CATEGORIES}
-          renderInput={(params) => <TextField {...params} label="Category" />}
-        />
+          value={category}
+          onChange={(e) =>
+            setCategory(e.target.value as typeof CATEGORIES[number])
+          }
+        >
+          {CATEGORIES.map((category) => (
+            <MenuItem
+              key={category}
+              value={category}
+              style={{ textTransform: "capitalize" }}
+            >
+              {category}
+            </MenuItem>
+          ))}
+        </Select>
         <OutlinedInput
           sx={{ width: "70%" }}
           type="number"
@@ -99,17 +114,26 @@ function App() {
           onChange={(e) => setValue(+e.target.value)}
           startAdornment={<InputAdornment position="start">PLN</InputAdornment>}
         />
-        <Autocomplete
+        <Select
           sx={{ width: "70%" }}
-          value={subcategory}
-          onChange={(_, v) => setSubcategory(v)}
+          labelId="subcategory"
           id="subcategory"
-          options={SUBCATEGORIES}
-          renderInput={(params) => (
-            <TextField {...params} label="Subcategory" />
-          )}
-        />
-
+          value={subcategory}
+          label="Subcategory"
+          onChange={(e) =>
+            setSubcategory(e.target.value as typeof SUBCATEGORIES[number])
+          }
+        >
+          {SUBCATEGORIES.map((subcategory) => (
+            <MenuItem
+              key={subcategory}
+              value={subcategory}
+              style={{ textTransform: "capitalize" }}
+            >
+              {subcategory}
+            </MenuItem>
+          ))}
+        </Select>
         <OutlinedInput
           sx={{ width: "70%" }}
           type="text"
@@ -131,9 +155,10 @@ function App() {
         onClose={() => {
           setIsModalOpen(false);
           setCategory(null);
-          setValue(null);
+          setValue("");
           setSubcategory(null);
           setDesription(undefined);
+          setModalMessage(undefined);
         }}
       >
         <Box
@@ -149,7 +174,7 @@ function App() {
           }}
         >
           <Typography variant="h6" component="h2">
-            {category?.label} : {value} PLN
+            {modalMessage ? modalMessage : `${category} : ${value} PLN`}
           </Typography>
           <Typography sx={{ mt: 2 }}>{actualDescription}</Typography>
         </Box>
