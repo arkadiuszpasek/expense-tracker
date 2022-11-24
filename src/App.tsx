@@ -1,11 +1,11 @@
 import {
-  Autocomplete,
   Button,
   Divider,
   InputAdornment,
+  MenuItem,
   Modal,
   OutlinedInput,
-  TextField,
+  Select,
   Typography,
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
@@ -44,14 +44,14 @@ function App() {
     fetch(scriptURL, { method: "POST", body })
       .then((response) => {
         console.log("Success!", response);
-        setModalMessage(
-          `Added ${category.label}, ${subcategory?.label}: ${value}`
-        );
+        const message = `Added ${category.label}: ${
+          subcategory?.label || "No category"
+        } cost ${value} PLN`;
+        setModalMessage(message);
         setCategory(null);
         setValue(null);
         setSubcategory(null);
         setDesription(null);
-        setModalMessage(undefined);
       })
       .catch((error) => {
         console.error("Error!", error.message);
@@ -71,38 +71,42 @@ function App() {
           {category?.key} : {subcategory?.key} : {value}
         </Typography>
         <Divider />
-        <Autocomplete
-          disablePortal
-          id="category-autocomplete"
-          options={CATEGORIES}
+        <Select
           sx={{ width: "70%" }}
-          renderInput={(params) => <TextField {...params} label="Category" />}
+          id="category"
           value={category}
-          onChange={(_: any, newCategory: CategoryItem | null) => {
-            setCategory(newCategory);
-          }}
-        />
+          onChange={(e) => setCategory(e.target.value as CategoryItem)}
+        >
+          {CATEGORIES.map((category) => (
+            // @ts-ignore
+            <MenuItem key={category.key} value={category}>
+              {category.label}
+            </MenuItem>
+          ))}
+        </Select>
         <OutlinedInput
           sx={{ width: "70%" }}
           type="number"
           id="value"
-          value={value}
+          value={value?.toString() || ""}
           onChange={(e) => setValue(+e.target.value)}
           startAdornment={<InputAdornment position="start">PLN</InputAdornment>}
         />
-        <Autocomplete
-          disablePortal
-          id="subcategory-autocomplete"
-          options={category ? SUBCATEGORIES[category.key] : []}
+        <Select
           sx={{ width: "70%" }}
-          renderInput={(params) => (
-            <TextField {...params} label="Subcategory" />
-          )}
+          labelId="subcategory"
+          id="subcategory"
           value={subcategory}
-          onChange={(_: any, newSubcategory: SubcategoryItem | null) => {
-            setSubcategory(newSubcategory);
-          }}
-        />
+          label="Subcategory"
+          onChange={(e) => setSubcategory(e.target.value as SubcategoryItem)}
+        >
+          {(category ? SUBCATEGORIES[category?.key] : []).map((subcategory) => (
+            // @ts-ignore
+            <MenuItem key={subcategory.key} value={subcategory}>
+              {subcategory.label}
+            </MenuItem>
+          ))}
+        </Select>
         <OutlinedInput
           sx={{ width: "70%" }}
           type="text"
@@ -119,12 +123,7 @@ function App() {
           Submit
         </Button>
       </Stack>
-      <Modal
-        open={!!modalMessage}
-        onClose={() => {
-          setModalMessage(undefined);
-        }}
-      >
+      <Modal open={!!modalMessage} onClose={() => setModalMessage(undefined)}>
         <Box
           sx={{
             position: "absolute" as "absolute",
@@ -137,13 +136,8 @@ function App() {
             p: 4,
           }}
         >
-          <Typography variant="h6" component="h2">
-            {category?.label}: {value} PLN
-          </Typography>
-          <Typography sx={{ mt: 2 }}>
-            <>
-              {subcategory?.label}, {description}
-            </>
+          <Typography variant="caption" component="h1">
+            {modalMessage}
           </Typography>
         </Box>
       </Modal>
