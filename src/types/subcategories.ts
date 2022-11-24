@@ -1,37 +1,53 @@
-import { CategoryKey, SubcategoryItem, SubcategoryKey } from "./types";
+import { CategoryKey, SubcategoryKey } from "./types";
+
+export const SUBCATEGORIES_ITEMS = {
+  [SubcategoryKey.Alcohol]: "Alcohol",
+  [SubcategoryKey.BikeClothes]: "Clothes",
+  [SubcategoryKey.BikeMaintenance]: "Maintenance",
+  [SubcategoryKey.Dentist]: "Dentist",
+  [SubcategoryKey.Drinks]: "Drinks",
+  [SubcategoryKey.Food]: "Food",
+  [SubcategoryKey.Gas]: "Gas",
+  [SubcategoryKey.Gift]: "Gift",
+  [SubcategoryKey.Hair]: "Hair",
+  [SubcategoryKey.MedTests]: "Med tests",
+  [SubcategoryKey.Phone]: "Phone",
+  [SubcategoryKey.Snacks]: "Snacks",
+  [SubcategoryKey.Sex]: "Stolarka okienno drzwiowa",
+} as const;
 
 export const SUBCATEGORIES = {
   [CategoryKey.Bike]: [
     {
-      label: "Clothes",
-      key: SubcategoryKey.Clothes,
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.BikeClothes],
+      key: SubcategoryKey.BikeClothes,
     },
     {
-      label: "Maintenance",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.BikeMaintenance],
       key: SubcategoryKey.BikeMaintenance,
     },
   ],
   [CategoryKey.Bills]: [
     {
-      label: "Dentist",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Dentist],
       key: SubcategoryKey.Dentist,
     },
     {
-      label: "Hair",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Hair],
       key: SubcategoryKey.Hair,
     },
     {
-      label: "Med Tests",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.MedTests],
       key: SubcategoryKey.MedTests,
     },
     {
-      label: "Phone",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Phone],
       key: SubcategoryKey.Phone,
     },
   ],
   [CategoryKey.Car]: [
     {
-      label: "Gas",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Gas],
       key: SubcategoryKey.Gas,
     },
   ],
@@ -40,23 +56,23 @@ export const SUBCATEGORIES = {
   [CategoryKey.Electronics]: [],
   [CategoryKey.Fun]: [
     {
-      label: "Alcohol",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Alcohol],
       key: SubcategoryKey.Alcohol,
     },
     {
-      label: "Drinks",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Drinks],
       key: SubcategoryKey.Drinks,
     },
     {
-      label: "Food",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Food],
       key: SubcategoryKey.Food,
     },
     {
-      label: "Snacks",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Snacks],
       key: SubcategoryKey.Snacks,
     },
     {
-      label: "Stolarka okienno-drzwiowa",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Sex],
       key: SubcategoryKey.Sex,
     },
   ],
@@ -65,7 +81,7 @@ export const SUBCATEGORIES = {
   [CategoryKey.House]: [],
   [CategoryKey.Social]: [
     {
-      label: "Gift",
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Gift],
       key: SubcategoryKey.Gift,
     },
   ],

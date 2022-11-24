@@ -1,10 +1,11 @@
 import {
+  Autocomplete,
   Button,
+  Divider,
   InputAdornment,
-  MenuItem,
   Modal,
   OutlinedInput,
-  Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Box, Stack } from "@mui/system";
@@ -22,16 +23,16 @@ function App() {
   const [category, setCategory] = useState<CategoryItem | null>(null);
   const [value, setValue] = useState<number | null>(null);
   const [subcategory, setSubcategory] = useState<SubcategoryItem | null>(null);
-  const [description, setDesription] = useState<string>();
+  const [description, setDesription] = useState<string | null>();
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>();
 
   const handleSubmit = () => {
     const body = new FormData();
     if (!category || !value) {
       return;
     }
-    body.append("Category", category);
+    body.append("Category", category.key);
     body.append("Value", value.toString());
     if (subcategory) {
       body.append("Subcategory", subcategory.key);
@@ -41,12 +42,20 @@ function App() {
     }
     console.log("Sending result to", scriptURL);
     fetch(scriptURL, { method: "POST", body })
-      .then((response) => console.log("Success!", response))
-      .then(() => setIsModalOpen(true))
+      .then((response) => {
+        console.log("Success!", response);
+        setModalMessage(
+          `Added ${category.label}, ${subcategory?.label}: ${value}`
+        );
+        setCategory(null);
+        setValue(null);
+        setSubcategory(null);
+        setDesription(null);
+        setModalMessage(undefined);
+      })
       .catch((error) => {
         console.error("Error!", error.message);
         setModalMessage(error.message);
-        setIsModalOpen(true);
       });
   };
 
@@ -58,24 +67,21 @@ function App() {
         justifyContent="flex-end"
         alignItems="flex-end"
       >
-        <Select
+        <Typography variant="caption">
+          {category?.key} : {subcategory?.key} : {value}
+        </Typography>
+        <Divider />
+        <Autocomplete
+          disablePortal
+          id="category-autocomplete"
+          options={CATEGORIES}
           sx={{ width: "70%" }}
-          id="category"
+          renderInput={(params) => <TextField {...params} label="Category" />}
           value={category}
-          onChange={(e) =>
-            setCategory(e.target.value as typeof CATEGORIES[number])
-          }
-        >
-          {CATEGORIES.map((category) => (
-            <MenuItem
-              key={category}
-              value={category}
-              style={{ textTransform: "capitalize" }}
-            >
-              {category}
-            </MenuItem>
-          ))}
-        </Select>
+          onChange={(_: any, newCategory: CategoryItem | null) => {
+            setCategory(newCategory);
+          }}
+        />
         <OutlinedInput
           sx={{ width: "70%" }}
           type="number"
@@ -84,24 +90,19 @@ function App() {
           onChange={(e) => setValue(+e.target.value)}
           startAdornment={<InputAdornment position="start">PLN</InputAdornment>}
         />
-        <Select
+        <Autocomplete
+          disablePortal
+          id="subcategory-autocomplete"
+          options={category ? SUBCATEGORIES[category.key] : []}
           sx={{ width: "70%" }}
-          labelId="subcategory"
-          id="subcategory"
+          renderInput={(params) => (
+            <TextField {...params} label="Subcategory" />
+          )}
           value={subcategory}
-          label="Subcategory"
-          onChange={(e) => setSubcategory(e.target.value as SubcategoryItem)}
-        >
-          {(category ? SUBCATEGORIES[category?.key] : []).map((subcategory) => (
-            <MenuItem
-              key={subcategory}
-              value={subcategory}
-              style={{ textTransform: "capitalize" }}
-            >
-              {subcategory}
-            </MenuItem>
-          ))}
-        </Select>
+          onChange={(_: any, newSubcategory: SubcategoryItem | null) => {
+            setSubcategory(newSubcategory);
+          }}
+        />
         <OutlinedInput
           sx={{ width: "70%" }}
           type="text"
@@ -119,13 +120,8 @@ function App() {
         </Button>
       </Stack>
       <Modal
-        open={isModalOpen}
+        open={!!modalMessage}
         onClose={() => {
-          setIsModalOpen(false);
-          setCategory(null);
-          setValue("");
-          setSubcategory(null);
-          setDesription(undefined);
           setModalMessage(undefined);
         }}
       >
