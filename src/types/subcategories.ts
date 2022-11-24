@@ -4,6 +4,7 @@ export const SUBCATEGORIES_ITEMS = {
   [SubcategoryKey.Alcohol]: "Alcohol",
   [SubcategoryKey.BikeClothes]: "Clothes",
   [SubcategoryKey.BikeMaintenance]: "Maintenance",
+  [SubcategoryKey.Bus]: "Bus",
   [SubcategoryKey.Dentist]: "Dentist",
   [SubcategoryKey.Drinks]: "Drinks",
   [SubcategoryKey.Food]: "Food",
@@ -12,8 +13,10 @@ export const SUBCATEGORIES_ITEMS = {
   [SubcategoryKey.Hair]: "Hair",
   [SubcategoryKey.MedTests]: "Med tests",
   [SubcategoryKey.Phone]: "Phone",
+  [SubcategoryKey.Scooter]: "Scooter",
   [SubcategoryKey.Snacks]: "Snacks",
   [SubcategoryKey.Sex]: "Stolarka okienno drzwiowa",
+  [SubcategoryKey.Uber]: "uber",
 } as const;
 
 export const SUBCATEGORIES = {
@@ -86,5 +89,18 @@ export const SUBCATEGORIES = {
     },
   ],
   [CategoryKey.Supplements]: [],
-  [CategoryKey.Travel]: [],
+  [CategoryKey.Travel]: [
+    {
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Bus],
+      key: SubcategoryKey.Bus,
+    },
+    {
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Scooter],
+      key: SubcategoryKey.Scooter,
+    },
+    {
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Uber],
+      key: SubcategoryKey.Uber,
+    },
+  ],
 } as const;

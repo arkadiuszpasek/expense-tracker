@@ -22,6 +22,7 @@ export enum SubcategoryKey {
   Alcohol = "alcohol",
   BikeClothes = "bike_clothes",
   BikeMaintenance = "bike_maintenance",
+  Bus = "bus",
   Dentist = "dentist",
   Drinks = "drinks",
   Food = "food",
@@ -30,8 +31,10 @@ export enum SubcategoryKey {
   Hair = "hair",
   MedTests = "med_tests",
   Phone = "phone",
+  Scooter = "scooter",
   Snacks = "snacks",
   Sex = "sex",
+  Uber = "uber",
 }
 export interface CategoryItem {
   label: string;
