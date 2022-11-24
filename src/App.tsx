@@ -10,51 +10,19 @@ import {
 import { Box, Stack } from "@mui/system";
 import { useState } from "react";
 import "./App.css";
+import { CATEGORIES } from "./types/categories";
+import { SUBCATEGORIES } from "./types/subcategories";
+import { CategoryItem, SubcategoryItem } from "./types/types";
+
 const scriptURL = process.env.REACT_APP_SHEET_SCRIPT_URL!;
-
-interface Item {
-  label: string;
-  key: string;
-}
-const CATEGORIES: Item[] = [
-  { label: "Bike", key: "bike" },
-  { label: "Bills", key: "bills" },
-  { label: "Car", key: "car" },
-  { label: "Clothes", key: "clothes" },
-  { label: "Cosmetic", key: "cosmetic" },
-  { label: "Electronics", key: "electronics" },
-  { label: "Flat", key: "flat" },
-  { label: "Fun", key: "fun" },
-  { label: "Groceries", key: "groceries" },
-  { label: "Health", key: "health" },
-  { label: "Hobbies", key: "hobbies" },
-  { label: "House", key: "house" },
-  { label: "Social", key: "social" },
-  { label: "Supplements", key: "supplements" },
-  { label: "Travel", key: "travel" },
-];
-
-const SUBCATEGORIES: Item[] = [
-  { label: "Alcohol", key: "alcohol" },
-  { label: "Drinks", key: "drinks" },
-  { label: "Dentist", key: "dentist" },
-  { label: "Food", key: "food" },
-  { label: "Gas", key: "gas" },
-  { label: "Hair", key: "Hair" },
-  { label: "Phone", key: "phone" },
-  { label: "Sex", key: "sex" },
-  { label: "Snacks", key: "snacks" },
-];
 
 console.log("Will fetch to", scriptURL);
 
 function App() {
-  const [category, setCategory] = useState<Item | null>(null);
+  const [category, setCategory] = useState<CategoryItem | null>(null);
   const [value, setValue] = useState<number | null>(null);
-  const [subcategory, setSubcategory] = useState<Item | null>(null);
+  const [subcategory, setSubcategory] = useState<SubcategoryItem | null>(null);
   const [description, setDesription] = useState<string>();
-
-  const actualDescription = subcategory?.key || description;
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -65,8 +33,11 @@ function App() {
     }
     body.append("Category", category.key);
     body.append("Value", value.toString());
-    if (actualDescription) {
-      body.append("Description", actualDescription);
+    if (subcategory) {
+      body.append("Subcategory", subcategory.key);
+    }
+    if (description) {
+      body.append("Description", description);
     }
     console.log("Sending result to", scriptURL);
     fetch(scriptURL, { method: "POST", body })
@@ -96,7 +67,7 @@ function App() {
           value={subcategory}
           onChange={(_, v) => setSubcategory(v)}
           id="subcategory"
-          options={SUBCATEGORIES}
+          options={category ? SUBCATEGORIES[category?.key] : []}
           renderInput={(params) => (
             <TextField {...params} label="Subcategory" />
           )}
@@ -140,9 +111,13 @@ function App() {
           }}
         >
           <Typography variant="h6" component="h2">
-            {category?.label} : {value} PLN
+            {category?.label}: {value} PLN
           </Typography>
-          <Typography sx={{ mt: 2 }}>{actualDescription}</Typography>
+          <Typography sx={{ mt: 2 }}>
+            <>
+              {subcategory?.label}, {description}
+            </>
+          </Typography>
         </Box>
       </Modal>
     </>
