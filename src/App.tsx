@@ -10,52 +10,19 @@ import {
 import { Box, Stack } from "@mui/system";
 import { useState } from "react";
 import "./App.css";
+import { CATEGORIES } from "./types/categories";
+import { SUBCATEGORIES } from "./types/subcategories";
+import { CategoryItem, SubcategoryItem } from "./types/types";
+
 const scriptURL = process.env.REACT_APP_SHEET_SCRIPT_URL!;
-
-const CATEGORIES = [
-  "bike",
-  "bills",
-  "car",
-  "clothes",
-  "cosmetic",
-  "electronics",
-  "flat",
-  "fun",
-  "groceries",
-  "health",
-  "hobbies",
-  "house",
-  "social",
-  "supplements",
-  "travel",
-] as const;
-
-const SUBCATEGORIES = [
-  "alcohol",
-  "drinks",
-  "dentist",
-  "food",
-  "gas",
-  "hair",
-  "phone",
-  "sex",
-  "snacks",
-] as const;
 
 console.log("Will fetch to", scriptURL);
 
 function App() {
-  const [modalMessage, setModalMessage] = useState<string>();
-  const [category, setCategory] = useState<typeof CATEGORIES[number] | null>(
-    null
-  );
-  const [value, setValue] = useState<number | "">("");
-  const [subcategory, setSubcategory] = useState<
-    typeof SUBCATEGORIES[number] | null
-  >(null);
+  const [category, setCategory] = useState<CategoryItem | null>(null);
+  const [value, setValue] = useState<number | null>(null);
+  const [subcategory, setSubcategory] = useState<SubcategoryItem | null>(null);
   const [description, setDesription] = useState<string>();
-
-  const actualDescription = subcategory || description;
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -66,8 +33,11 @@ function App() {
     }
     body.append("Category", category);
     body.append("Value", value.toString());
-    if (actualDescription) {
-      body.append("Description", actualDescription);
+    if (subcategory) {
+      body.append("Subcategory", subcategory.key);
+    }
+    if (description) {
+      body.append("Description", description);
     }
     console.log("Sending result to", scriptURL);
     fetch(scriptURL, { method: "POST", body })
@@ -120,11 +90,9 @@ function App() {
           id="subcategory"
           value={subcategory}
           label="Subcategory"
-          onChange={(e) =>
-            setSubcategory(e.target.value as typeof SUBCATEGORIES[number])
-          }
+          onChange={(e) => setSubcategory(e.target.value as SubcategoryItem)}
         >
-          {SUBCATEGORIES.map((subcategory) => (
+          {(category ? SUBCATEGORIES[category?.key] : []).map((subcategory) => (
             <MenuItem
               key={subcategory}
               value={subcategory}
@@ -174,9 +142,13 @@ function App() {
           }}
         >
           <Typography variant="h6" component="h2">
-            {modalMessage ? modalMessage : `${category} : ${value} PLN`}
+            {category?.label}: {value} PLN
           </Typography>
-          <Typography sx={{ mt: 2 }}>{actualDescription}</Typography>
+          <Typography sx={{ mt: 2 }}>
+            <>
+              {subcategory?.label}, {description}
+            </>
+          </Typography>
         </Box>
       </Modal>
     </>
