@@ -13,6 +13,7 @@ export const SUBCATEGORIES_ITEMS = {
   [SubcategoryKey.Hair]: "Hair",
   [SubcategoryKey.MedTests]: "Med tests",
   [SubcategoryKey.Phone]: "Phone",
+  [SubcategoryKey.Protein]: "Protein",
   [SubcategoryKey.Scooter]: "Scooter",
   [SubcategoryKey.Snacks]: "Snacks",
   [SubcategoryKey.Sex]: "Stolarka okienno drzwiowa",
@@ -88,7 +89,12 @@ export const SUBCATEGORIES = {
       key: SubcategoryKey.Gift,
     },
   ],
-  [CategoryKey.Supplements]: [],
+  [CategoryKey.Supplements]: [
+    {
+      label: SUBCATEGORIES_ITEMS[SubcategoryKey.Protein],
+      key: SubcategoryKey.Protein,
+    },
+  ],
   [CategoryKey.Travel]: [
     {
       label: SUBCATEGORIES_ITEMS[SubcategoryKey.Bus],

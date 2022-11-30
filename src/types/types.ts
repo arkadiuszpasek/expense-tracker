@@ -31,6 +31,7 @@ export enum SubcategoryKey {
   Hair = "hair",
   MedTests = "med_tests",
   Phone = "phone",
+  Protein = "protein",
   Scooter = "scooter",
   Snacks = "snacks",
   Sex = "sex",
